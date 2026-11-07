@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+    <nav th:fragment="navbar" class="navbar">
+        <a th:href="@{/}" class="navbar-brand">
+            <img th:src="@{/images/logo.png}" alt="FigureDB" class="brand-logo" />
+        </a>
+        <div class="navbar-links">
+            <a th:href="@{/figure}">Figure</a>
+            <a th:href="@{/serie}">Serie</a>
+            <a th:href="@{/fumetti}">Fumetti</a>
+            <a th:href="@{/aziende}">Aziende</a>
+            <a th:href="@{/figure/cerca}">Figure React</a>
+
+            <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/dashboard}" class="btn-admin">Admin</a>
+
+            <a sec:authorize="isAuthenticated()" th:href="@{/profilo}" class="user-info">
+                <span sec:authentication="name">utente</span>
+            </a>
+            <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="POST" style="display:inline;">
+                <button type="submit" class="btn-logout">Esci</button>
+            </form>
+
+            <a sec:authorize="!isAuthenticated()" th:href="@{/login}" class="btn-login">Accedi</a>
+            <a sec:authorize="!isAuthenticated()" th:href="@{/register}" class="btn-register">Registrati</a>
+        </div>
+    </nav>
+</body>
+</html>

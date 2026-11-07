@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FigureDB - Dettaglio Figure</title>
+    <link rel="stylesheet" th:href="@{/css/stile.css}" />
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <section class="page-content" th:if="${figure}">
+        <div class="detail-card">
+            <div class="detail-header">
+                <img th:if="${figure.immagine != null}" th:src="@{${figure.immagine}}" th:alt="${figure.nome}" class="detail-img" />
+                <h1 th:text="${figure.nome}">Nome figure</h1>
+                <span class="detail-badge" th:text="${figure.materiale.label}">PVC</span>
+            </div>
+
+            <div class="detail-body">
+
+                <div th:if="${votoMedio != null}" class="highlight-box">
+                    <span class="highlight-value"
+                          th:text="${#numbers.formatDecimal(votoMedio, 1, 1)} + ' / 5'">4.5 / 5</span>
+                </div>
+
+                <div class="detail-field">
+                    <span class="detail-label">Azienda</span>
+                    <p th:text="${figure.azienda.nome}">Azienda</p>
+                </div>
+
+                <div class="detail-field">
+                    <span class="detail-label">Serie</span>
+                    <p th:text="${figure.serie.nome}">Serie</p>
+                </div>
+
+                <div class="detail-field">
+                    <span class="detail-label">Data di uscita</span>
+                    <p th:text="${#temporals.format(figure.dataUscita, 'dd/MM/yyyy')}">01/01/2026</p>
+                </div>
+
+                <div class="detail-field">
+                    <span class="detail-label">Altezza</span>
+                    <p th:text="${figure.altezza} + ' cm'">15 cm</p>
+                </div>
+
+                <div class="detail-field">
+                    <span class="detail-label">Prezzo</span>
+                    <p th:text="${#numbers.formatDecimal(figure.prezzo, 1, 2)} + ' EUR'">49 EUR</p>
+                </div>
+
+                <div class="detail-field" th:if="${figure.descrizione != null}">
+                    <span class="detail-label">Descrizione</span>
+                    <p th:text="${figure.descrizione}">Descrizione</p>
+                </div>
+
+                <div class="detail-field" style="margin-top: 2rem;">
+                    <span class="detail-label" th:text="'Recensioni (' + ${recensioni.size()} + ')'">Recensioni</span>
+
+                    <p th:if="${errore}" class="error-msg" th:text="${errore}">Errore</p>
+
+                    <div th:if="${!recensioni.isEmpty()}">
+                        <div th:each="recensione : ${recensioni}" class="recensione-item">
+                            <div class="recensione-header">
+                                <strong th:text="${recensione.titolo}">Titolo</strong>
+                                <span class="status-badge" th:text="${recensione.voto} + '/5'">4/5</span>
+                            </div>
+                            <p class="recensione-meta"
+                               th:text="${recensione.autore?.nomeCompleto ?: 'Anonimo'} + ' - ' + ${#temporals.format(recensione.data, 'dd/MM/yyyy')}">Autore - data</p>
+                            <p th:text="${recensione.testo}">Testo recensione</p>
+
+                            <div th:if="${(currentUserId != null and recensione.autore != null and recensione.autore.id == currentUserId) or #authorization.expression('hasRole(''ADMIN'')')}"
+                                 class="recensione-actions">
+                                <form th:if="${currentUserId != null and recensione.autore != null and recensione.autore.id == currentUserId}"
+                                      th:action="@{'/figure/' + ${figure.id} + '/recensione/' + ${recensione.id} + '/edit'}" method="POST" class="recensione-edit-form">
+                                    <input type="text" name="titolo" th:value="${recensione.titolo}" class="recensione-edit-input" required />
+                                    <input type="text" name="testo" th:value="${recensione.testo}" class="recensione-edit-input" required />
+                                    <input type="number" name="voto" min="1" max="5" th:value="${recensione.voto}" style="width:70px;" />
+                                    <button type="submit" class="btn-small">Modifica</button>
+                                </form>
+                                <form th:action="@{'/figure/' + ${figure.id} + '/recensione/' + ${recensione.id} + '/delete'}" method="POST" style="display:inline;">
+                                    <button type="submit" class="btn-small btn-danger" onclick="return confirm('Eliminare la recensione?')">Elimina</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p th:if="${recensioni.isEmpty()}" class="empty-text">Nessuna recensione ancora.</p>
+
+                    <div sec:authorize="isAuthenticated()" class="recensione-form" style="margin-top: 1rem;">
+                        <form th:action="@{'/figure/' + ${figure.id} + '/recensione'}" method="POST">
+                            <input type="text" name="titolo" placeholder="Titolo della recensione" required />
+                            <textarea name="testo" placeholder="Scrivi una recensione..." rows="2" maxlength="1000" required></textarea>
+                            <label for="voto">Voto (1-5)</label>
+                            <input type="number" id="voto" name="voto" min="1" max="5" value="4" required />
+                            <button type="submit" class="btn btn-primary" style="margin-top:0.5rem;">Pubblica recensione</button>
+                        </form>
+                    </div>
+                    <p sec:authorize="!isAuthenticated()" class="empty-text" style="margin-top: 0.5rem;">
+                        <a th:href="@{/login}">Accedi</a> per lasciare una recensione.
+                    </p>
+                </div>
+            </div>
+
+            <div class="detail-actions">
+                <a th:href="@{/figure}" class="btn btn-secondary">&larr; Torna alle Figure</a>
+                <a sec:authorize="hasRole('ADMIN')"
+                   th:href="@{'/admin/figure/' + ${figure.id} + '/edit'}" class="btn btn-secondary">Modifica</a>
+                <form sec:authorize="hasRole('ADMIN')"
+                      th:action="@{'/admin/figure/' + ${figure.id} + '/delete'}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-danger"
+                            onclick="return confirm('Eliminare questa figure e le sue recensioni?')">Elimina Figure</button>
+                </form>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

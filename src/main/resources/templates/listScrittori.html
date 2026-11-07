@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FigureDB - Scrittori</title>
+    <link rel="stylesheet" th:href="@{/css/stile.css}" />
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <section class="page-content">
+        <div class="page-header">
+            <h1>Gestione Scrittori</h1>
+        </div>
+
+        <p th:if="${errore}" class="error-msg" th:text="${errore}">Errore</p>
+
+        <div th:if="${scrittori.isEmpty()}" class="empty-state">
+            <p>Nessun scrittore registrato.</p>
+        </div>
+
+        <table th:unless="${scrittori.isEmpty()}" class="data-table">
+            <thead>
+                <tr><th>Nome</th><th>Paese</th><th>Fumetti</th><th>Azioni</th></tr>
+            </thead>
+            <tbody>
+                <tr th:each="x : ${scrittori}">
+                    <td><a th:href="@{'/scrittori/' + ${x.id}}" th:text="${x.nomeCompleto}">Nome</a></td>
+                    <td th:text="${x.paese}">Paese</td>
+                    <td th:text="${x.fumetti.size()}">0</td>
+                    <td>
+                        <a th:href="@{'/admin/scrittori/' + ${x.id} + '/edit'}" class="btn-small">Modifica</a>
+                        <form th:action="@{'/admin/scrittori/' + ${x.id} + '/delete'}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn-small btn-danger" onclick="return confirm('Eliminare?')">Elimina</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="page-actions">
+            <a th:href="@{/admin/scrittori/new}" class="btn btn-primary">Nuovo Scrittore</a>
+            <a th:href="@{/admin/dashboard}" class="btn btn-secondary">&larr; Dashboard</a>
+        </div>
+    </section>
+</body>
+</html>

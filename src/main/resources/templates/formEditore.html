@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FigureDB - Editore</title>
+    <link rel="stylesheet" th:href="@{/css/stile.css}" />
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <section class="page-content">
+        <div class="form-container">
+            <h2 th:text="${editore.id != null ? 'Modifica Editore' : 'Nuovo Editore'}">Editore</h2>
+
+            <form th:action="${editore.id != null ? '/admin/editori/' + editore.id + '/edit' : '/admin/editori'}"
+                  method="POST" th:object="${editore}">
+
+                <label for="nome">Nome</label>
+                <input required type="text" id="nome" th:field="*{nome}" />
+                <span th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}" class="error-msg"></span>
+
+                <label for="regione">Regione / Paese</label>
+                <input required type="text" id="regione" th:field="*{regione}" />
+                <span th:if="${#fields.hasErrors('regione')}" th:errors="*{regione}" class="error-msg"></span>
+
+                <label for="logo">Logo (percorso o URL)</label>
+                <input type="text" id="logo" th:field="*{logo}" />
+
+                <label for="descrizione">Descrizione</label>
+                <textarea id="descrizione" th:field="*{descrizione}" rows="4"></textarea>
+                <span th:if="${#fields.hasErrors('descrizione')}" th:errors="*{descrizione}" class="error-msg"></span>
+
+                <button type="submit">Conferma</button>
+            </form>
+        </div>
+    </section>
+</body>
+</html>

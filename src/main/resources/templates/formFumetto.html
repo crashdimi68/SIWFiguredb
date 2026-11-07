@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FigureDB - Fumetto</title>
+    <link rel="stylesheet" th:href="@{/css/stile.css}" />
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <section class="page-content">
+        <div class="form-container">
+            <h2 th:text="${fumettoForm.id != null ? 'Modifica Fumetto' : 'Nuovo Fumetto'}">Fumetto</h2>
+
+            <p th:if="${errore}" class="error-msg" th:text="${errore}">Errore</p>
+
+            <form th:action="${fumettoForm.id != null ? '/admin/fumetti/' + fumettoForm.id + '/edit' : '/admin/fumetti'}"
+                  method="POST" th:object="${fumettoForm}">
+
+                <label for="titolo">Titolo</label>
+                <input required type="text" id="titolo" th:field="*{titolo}" />
+                <span th:if="${#fields.hasErrors('titolo')}" th:errors="*{titolo}" class="error-msg"></span>
+
+                <label for="serieId">Serie</label>
+                <select name="serieId" id="serieId" required>
+                    <option value="">-- Seleziona Serie --</option>
+                    <option th:each="s : ${serieList}" th:value="${s.id}" th:text="${s.nome}"
+                            th:selected="${fumettoForm.serie != null and fumettoForm.serie.id == s.id}">Serie</option>
+                </select>
+
+                <label for="scrittoreId">Scrittore</label>
+                <select name="scrittoreId" id="scrittoreId" required>
+                    <option value="">-- Seleziona Scrittore --</option>
+                    <option th:each="sc : ${scrittori}" th:value="${sc.id}" th:text="${sc.nomeCompleto}"
+                            th:selected="${fumettoForm.scrittore != null and fumettoForm.scrittore.id == sc.id}">Scrittore</option>
+                </select>
+
+                <label for="disegnatoriIds">Disegnatori (tieni premuto Ctrl per selezionarne piu di uno)</label>
+                <select name="disegnatoriIds" id="disegnatoriIds" multiple size="5" required>
+                    <option th:each="d : ${disegnatori}" th:value="${d.id}" th:text="${d.nomeCompleto}"
+                            th:selected="${fumettoForm.disegnatori.contains(d)}">Disegnatore</option>
+                </select>
+
+                <label for="editoreId">Editore</label>
+                <select name="editoreId" id="editoreId" required>
+                    <option value="">-- Seleziona Editore --</option>
+                    <option th:each="e : ${editori}" th:value="${e.id}" th:text="${e.nome}"
+                            th:selected="${fumettoForm.editore != null and fumettoForm.editore.id == e.id}">Editore</option>
+                </select>
+
+                <label for="anno">Anno</label>
+                <input required type="number" id="anno" th:field="*{anno}" />
+                <span th:if="${#fields.hasErrors('anno')}" th:errors="*{anno}" class="error-msg"></span>
+
+                <label for="isbn">ISBN (10 o 13 cifre)</label>
+                <input required type="text" id="isbn" th:field="*{isbn}" />
+                <span th:if="${#fields.hasErrors('isbn')}" th:errors="*{isbn}" class="error-msg"></span>
+
+                <label for="prezzo">Prezzo (EUR)</label>
+                <input required type="number" step="0.01" id="prezzo" th:field="*{prezzo}" />
+                <span th:if="${#fields.hasErrors('prezzo')}" th:errors="*{prezzo}" class="error-msg"></span>
+
+                <label for="genere">Genere</label>
+                <input required type="text" id="genere" th:field="*{genere}" />
+                <span th:if="${#fields.hasErrors('genere')}" th:errors="*{genere}" class="error-msg"></span>
+
+                <label for="immagine">Immagine (percorso o URL)</label>
+                <input type="text" id="immagine" th:field="*{immagine}" />
+
+                <label class="checkbox-label">
+                    <input type="checkbox" th:field="*{variant}" /> Edizione variant
+                </label>
+
+                <button type="submit">Conferma</button>
+            </form>
+
+            <div class="form-link" sec:authorize="hasRole('ADMIN')">
+                <a th:href="@{/admin/scrittori/new}">+ Scrittore</a> &middot;
+                <a th:href="@{/admin/disegnatori/new}">+ Disegnatore</a> &middot;
+                <a th:href="@{/admin/editori/new}">+ Editore</a>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

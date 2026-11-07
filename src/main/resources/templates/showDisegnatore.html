@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FigureDB - Dettaglio Disegnatore</title>
+    <link rel="stylesheet" th:href="@{/css/stile.css}" />
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <section class="page-content" th:if="${disegnatore}">
+        <div class="detail-card">
+            <div class="detail-header">
+                <h1 th:text="${disegnatore.nomeCompleto}">Nome</h1>
+                <span class="detail-badge">Disegnatore</span>
+            </div>
+
+            <div class="detail-body">
+                <div class="detail-field" th:if="${disegnatore.dataNascita != null}">
+                    <span class="detail-label">Data di nascita</span>
+                    <p th:text="${#temporals.format(disegnatore.dataNascita, 'dd/MM/yyyy')}">01/01/1970</p>
+                </div>
+
+                <div class="detail-field" th:if="${disegnatore.paese != null}">
+                    <span class="detail-label">Paese</span>
+                    <p th:text="${disegnatore.paese}">Paese</p>
+                </div>
+
+                <div class="detail-field">
+                    <span class="detail-label" th:text="'Fumetti (' + ${disegnatore.fumetti.size()} + ')'">Fumetti</span>
+                    <ul th:if="${!disegnatore.fumetti.isEmpty()}" class="detail-list">
+                        <li th:each="fu : ${disegnatore.fumetti}">
+                            <a th:href="@{'/fumetti/' + ${fu.id}}" th:text="${fu.titolo} + ' (' + ${fu.anno} + ')'">Fumetto</a>
+                        </li>
+                    </ul>
+                    <p th:if="${disegnatore.fumetti.isEmpty()}" class="empty-text">Nessun fumetto.</p>
+                </div>
+            </div>
+
+            <div class="detail-actions">
+                <a th:href="@{/fumetti}" class="btn btn-secondary">&larr; Torna ai Fumetti</a>
+                <a sec:authorize="hasRole('ADMIN')" th:href="@{'/admin/disegnatori/' + ${disegnatore.id} + '/edit'}" class="btn btn-secondary">Modifica</a>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

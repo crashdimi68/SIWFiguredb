@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FigureDB - Figure</title>
+    <link rel="stylesheet" th:href="@{/css/stile.css}" />
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <section class="page-content">
+        <div class="page-header">
+            <h1>Tutte le Figure</h1>
+            <p class="page-subtitle">Seleziona una figure per vederne scheda, azienda, serie e recensioni</p>
+        </div>
+
+        <div th:if="${figure.isEmpty()}" class="empty-state">
+            <p>Non ci sono figure nel catalogo.</p>
+        </div>
+
+        <div th:unless="${figure.isEmpty()}" class="card-grid">
+            <a th:each="f : ${figure}" th:href="@{'/figure/' + ${f.id}}" class="card card-img">
+                <img th:if="${f.immagine != null}" th:src="@{${f.immagine}}" th:alt="${f.nome}" class="card-cover" />
+                <div th:if="${f.immagine == null}" class="card-cover card-cover-vuota">Nessuna immagine</div>
+                <h3 th:text="${f.nome}">Nome figure</h3>
+                <span class="card-meta" th:text="${f.azienda.nome} + ' - ' + ${f.serie.nome}">Azienda - Serie</span>
+                <span class="card-price" th:text="${#numbers.formatDecimal(f.prezzo, 1, 2)} + ' EUR'">0 EUR</span>
+            </a>
+        </div>
+
+        <nav th:if="${pagina.totalPages > 1}" class="pagination" aria-label="Navigazione pagine">
+            <a th:if="${!pagina.first}" th:href="@{/figure(page=${pagina.number - 1})}"
+                class="pagination-step">&larr; Precedente</a>
+            <span th:if="${pagina.first}" class="pagination-step pagination-disabled">&larr; Precedente</span>
+
+            <a th:each="i : ${#numbers.sequence(0, pagina.totalPages - 1)}"
+                th:href="@{/figure(page=${i})}"
+                th:text="${i + 1}"
+                class="pagination-page"
+                th:classappend="${i == pagina.number} ? 'pagination-current' : ''">1</a>
+
+            <a th:if="${!pagina.last}" th:href="@{/figure(page=${pagina.number + 1})}"
+                class="pagination-step">Successiva &rarr;</a>
+            <span th:if="${pagina.last}" class="pagination-step pagination-disabled">Successiva &rarr;</span>
+        </nav>
+
+        <p th:if="${pagina.totalElements > 0}" class="pagination-info"
+            th:text="'Pagina ' + (${pagina.number} + 1) + ' di ' + ${pagina.totalPages}
+                   + ' - ' + ${pagina.totalElements} + ' figure in totale'">Pagina 1 di 1</p>
+
+        <div class="page-actions">
+            <a th:href="@{/figure/cerca}" class="btn btn-primary">Ricerca avanzata (React)</a>
+            <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/figure/new}" class="btn btn-secondary">Nuova Figure</a>
+        </div>
+    </section>
+</body>
+</html>

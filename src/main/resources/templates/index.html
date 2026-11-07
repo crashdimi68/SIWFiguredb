@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FigureDB - Homepage</title>
+    <link rel="stylesheet" th:href="@{/css/stile.css}" />
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <section class="hero">
+        <h1>LA TUA<br><span class="highlight">COLLEZIONE</span></h1>
+        <p class="hero-subtitle">
+            Sfoglia il catalogo delle figure da collezione, scopri le serie e i fumetti
+            da cui nascono e lascia la tua recensione.
+        </p>
+        <div class="hero-actions">
+            <a th:href="@{/figure}" class="btn btn-primary">Vedi le Figure</a>
+            <a th:href="@{/serie}" class="btn btn-secondary">Vedi le Serie</a>
+        </div>
+    </section>
+</body>
+</html>

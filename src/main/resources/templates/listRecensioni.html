@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FigureDB - Recensioni</title>
+    <link rel="stylesheet" th:href="@{/css/stile.css}" />
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <section class="page-content">
+        <div class="page-header">
+            <h1>Tutte le Recensioni</h1>
+            <p class="page-subtitle" th:text="${recensioni.size()} + ' recensioni presenti nel sito'">Recensioni</p>
+        </div>
+
+        <div th:if="${recensioni.isEmpty()}" class="empty-state">
+            <p>Non ci sono recensioni.</p>
+        </div>
+
+        <table th:unless="${recensioni.isEmpty()}" class="data-table">
+            <thead>
+                <tr>
+                    <th>Figure</th>
+                    <th>Autore</th>
+                    <th>Titolo</th>
+                    <th>Voto</th>
+                    <th>Data</th>
+                    <th>Testo</th>
+                    <th>Azioni</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="r : ${recensioni}">
+                    <td><a th:href="@{'/figure/' + ${r.figure.id}}" th:text="${r.figure.nome}">Figure</a></td>
+                    <td th:text="${r.autore?.nomeCompleto ?: 'Anonimo'}">Autore</td>
+                    <td th:text="${r.titolo}">Titolo</td>
+                    <td><span class="status-badge" th:text="${r.voto} + '/5'">5/5</span></td>
+                    <td th:text="${#temporals.format(r.data, 'dd/MM/yyyy')}">01/01/2026</td>
+                    <td th:text="${r.testo}">Testo</td>
+                    <td>
+                        <form th:action="@{'/admin/recensioni/' + ${r.id} + '/delete'}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn-small btn-danger" onclick="return confirm('Eliminare la recensione?')">Elimina</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="page-actions">
+            <a th:href="@{/admin/dashboard}" class="btn btn-secondary">&larr; Dashboard</a>
+        </div>
+    </section>
+</body>
+</html>

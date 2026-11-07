@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FigureDB - Figure</title>
+    <link rel="stylesheet" th:href="@{/css/stile.css}" />
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <section class="page-content">
+        <div class="form-container">
+            <h2 th:text="${figureForm.id != null ? 'Modifica Figure' : 'Nuova Figure'}">Figure</h2>
+
+            <p th:if="${errore}" class="error-msg" th:text="${errore}">Errore</p>
+
+            <form th:action="${figureForm.id != null ? '/admin/figure/' + figureForm.id + '/edit' : '/admin/figure'}"
+                  method="POST" th:object="${figureForm}">
+
+                <label for="nome">Nome</label>
+                <input required type="text" id="nome" th:field="*{nome}" placeholder="Nome della figure" />
+                <span th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}" class="error-msg"></span>
+
+                <label for="aziendaId">Azienda</label>
+                <select name="aziendaId" id="aziendaId" required>
+                    <option value="">-- Seleziona Azienda --</option>
+                    <option th:each="a : ${aziende}" th:value="${a.id}" th:text="${a.nome}"
+                            th:selected="${figureForm.azienda != null and figureForm.azienda.id == a.id}">Azienda</option>
+                </select>
+
+                <label for="serieId">Serie</label>
+                <select name="serieId" id="serieId" required>
+                    <option value="">-- Seleziona Serie --</option>
+                    <option th:each="s : ${serieList}" th:value="${s.id}" th:text="${s.nome}"
+                            th:selected="${figureForm.serie != null and figureForm.serie.id == s.id}">Serie</option>
+                </select>
+
+                <label for="dataUscita">Data di uscita</label>
+                <input required type="date" id="dataUscita" th:field="*{dataUscita}" />
+                <span th:if="${#fields.hasErrors('dataUscita')}" th:errors="*{dataUscita}" class="error-msg"></span>
+
+                <label for="altezza">Altezza (cm)</label>
+                <input required type="number" step="0.1" id="altezza" th:field="*{altezza}" placeholder="Es. 15.5" />
+                <span th:if="${#fields.hasErrors('altezza')}" th:errors="*{altezza}" class="error-msg"></span>
+
+                <label for="materiale">Materiale</label>
+                <select id="materiale" th:field="*{materiale}" required>
+                    <option value="">-- Seleziona Materiale --</option>
+                    <option th:each="m : ${materiali}" th:value="${m}" th:text="${m.label}">Materiale</option>
+                </select>
+                <span th:if="${#fields.hasErrors('materiale')}" th:errors="*{materiale}" class="error-msg"></span>
+
+                <label for="prezzo">Prezzo (EUR)</label>
+                <input required type="number" step="0.01" id="prezzo" th:field="*{prezzo}" placeholder="Es. 49.90" />
+                <span th:if="${#fields.hasErrors('prezzo')}" th:errors="*{prezzo}" class="error-msg"></span>
+
+                <label for="immagine">Immagine (percorso o URL)</label>
+                <input type="text" id="immagine" th:field="*{immagine}" placeholder="/images/figure/cartella/foto.jpg" />
+
+                <label for="descrizione">Descrizione</label>
+                <textarea id="descrizione" th:field="*{descrizione}" rows="4"></textarea>
+                <span th:if="${#fields.hasErrors('descrizione')}" th:errors="*{descrizione}" class="error-msg"></span>
+
+                <button type="submit">Conferma</button>
+            </form>
+
+            <div class="form-link">
+                <a th:href="@{/admin/aziende/new}">+ Crea una nuova azienda</a> &middot;
+                <a th:href="@{/admin/serie/new}">+ Crea una nuova serie</a>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

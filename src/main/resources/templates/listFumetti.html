@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FigureDB - Fumetti</title>
+    <link rel="stylesheet" th:href="@{/css/stile.css}" />
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <section class="page-content">
+        <div class="page-header">
+            <h1>Tutti i Fumetti</h1>
+            <p class="page-subtitle">Seleziona un fumetto per vederne autori, editore e serie</p>
+        </div>
+
+        <div th:if="${fumetti.isEmpty()}" class="empty-state">
+            <p>Nessun fumetto trovato.</p>
+        </div>
+
+        <div th:unless="${fumetti.isEmpty()}" class="card-grid">
+            <a th:each="fu : ${fumetti}" th:href="@{'/fumetti/' + ${fu.id}}" class="card card-img">
+                <img th:if="${fu.immagine != null}" th:src="@{${fu.immagine}}" th:alt="${fu.titolo}" class="card-cover" />
+                <div th:if="${fu.immagine == null}" class="card-cover card-cover-vuota">Nessuna immagine</div>
+                <h3 th:text="${fu.titolo}">Titolo</h3>
+                <span class="card-meta" th:text="${fu.serie.nome} + ' - ' + ${fu.anno}">Serie - anno</span>
+                <span th:if="${fu.variant}" class="status-badge">Variant</span>
+            </a>
+        </div>
+
+        <div class="page-actions" sec:authorize="hasRole('ADMIN')">
+            <a th:href="@{/admin/fumetti/new}" class="btn btn-primary">Nuovo Fumetto</a>
+        </div>
+    </section>
+</body>
+</html>

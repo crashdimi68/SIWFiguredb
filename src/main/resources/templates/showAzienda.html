@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FigureDB - Dettaglio Azienda</title>
+    <link rel="stylesheet" th:href="@{/css/stile.css}" />
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <section class="page-content" th:if="${azienda}">
+        <div class="detail-card">
+            <div class="detail-header">
+                <img th:if="${azienda.logo != null}" th:src="@{${azienda.logo}}" th:alt="${azienda.nome}" class="detail-img" />
+                <h1 th:text="${azienda.nome}">Azienda</h1>
+                <span class="detail-badge" th:if="${azienda.regione != null}" th:text="${azienda.regione}">Giappone</span>
+            </div>
+
+            <div class="detail-body">
+                <div class="detail-field" th:if="${azienda.descrizione != null}">
+                    <span class="detail-label">Descrizione</span>
+                    <p th:text="${azienda.descrizione}">Descrizione</p>
+                </div>
+
+                <div class="detail-field">
+                    <span class="detail-label" th:text="'Figure prodotte (' + ${azienda.figure.size()} + ')'">Figure</span>
+                    <div th:if="${!azienda.figure.isEmpty()}" class="card-grid">
+                        <a th:each="f : ${azienda.figure}" th:href="@{'/figure/' + ${f.id}}" class="card card-img">
+                            <img th:if="${f.immagine != null}" th:src="@{${f.immagine}}" th:alt="${f.nome}" class="card-cover" />
+                            <h3 th:text="${f.nome}">Figure</h3>
+                            <span class="card-meta" th:text="${f.serie.nome}">Serie</span>
+                        </a>
+                    </div>
+                    <p th:if="${azienda.figure.isEmpty()}" class="empty-text">Nessuna figure prodotta.</p>
+                </div>
+            </div>
+
+            <div class="detail-actions">
+                <a th:href="@{/aziende}" class="btn btn-secondary">&larr; Torna alle Aziende</a>
+                <a sec:authorize="hasRole('ADMIN')" th:href="@{'/admin/aziende/' + ${azienda.id} + '/edit'}" class="btn btn-secondary">Modifica</a>
+                <form sec:authorize="hasRole('ADMIN')" th:action="@{'/admin/aziende/' + ${azienda.id} + '/delete'}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Eliminare questa azienda?')">Elimina Azienda</button>
+                </form>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

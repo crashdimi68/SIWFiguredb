@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FigureDB - Dashboard Admin</title>
+    <link rel="stylesheet" th:href="@{/css/stile.css}" />
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <section class="page-content">
+        <div class="page-header">
+            <h1>Pannello Amministrazione</h1>
+            <p class="page-subtitle">Gestisci figure, fumetti, serie, aziende, autori e recensioni</p>
+        </div>
+
+        <div class="card-grid">
+            <div class="card">
+                <h3>Figure</h3>
+                <div class="card-links">
+                    <a th:href="@{/figure}" class="card-link card-link-primary">Tutte le Figure</a>
+                    <a th:href="@{/admin/figure/new}" class="card-link">+ Nuova</a>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Fumetti</h3>
+                <div class="card-links">
+                    <a th:href="@{/fumetti}" class="card-link card-link-primary">Tutti i Fumetti</a>
+                    <a th:href="@{/admin/fumetti/new}" class="card-link">+ Nuovo</a>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Serie</h3>
+                <div class="card-links">
+                    <a th:href="@{/serie}" class="card-link card-link-primary">Tutte le Serie</a>
+                    <a th:href="@{/admin/serie/new}" class="card-link">+ Nuova</a>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Aziende</h3>
+                <div class="card-links">
+                    <a th:href="@{/aziende}" class="card-link card-link-primary">Tutte le Aziende</a>
+                    <a th:href="@{/admin/aziende/new}" class="card-link">+ Nuova</a>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Scrittori</h3>
+                <div class="card-links">
+                    <a th:href="@{/admin/scrittori}" class="card-link card-link-primary">Tutti gli Scrittori</a>
+                    <a th:href="@{/admin/scrittori/new}" class="card-link">+ Nuovo</a>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Disegnatori</h3>
+                <div class="card-links">
+                    <a th:href="@{/admin/disegnatori}" class="card-link card-link-primary">Tutti i Disegnatori</a>
+                    <a th:href="@{/admin/disegnatori/new}" class="card-link">+ Nuovo</a>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Editori</h3>
+                <div class="card-links">
+                    <a th:href="@{/admin/editori}" class="card-link card-link-primary">Tutti gli Editori</a>
+                    <a th:href="@{/admin/editori/new}" class="card-link">+ Nuovo</a>
+                </div>
+            </div>
+
+            <a th:href="@{/admin/recensioni}" class="card">
+                <h3>Recensioni</h3>
+                <div class="card-arrow">Tutte le recensioni &rarr;</div>
+            </a>
+
+            <a th:href="@{/admin/performance}" class="card">
+                <h3>Analisi Prestazioni</h3>
+                <div class="card-arrow">Confronta &rarr;</div>
+            </a>
+        </div>
+    </section>
+</body>
+</html>

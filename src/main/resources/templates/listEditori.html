@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FigureDB - Editori</title>
+    <link rel="stylesheet" th:href="@{/css/stile.css}" />
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <section class="page-content">
+        <div class="page-header">
+            <h1>Gestione Editori</h1>
+        </div>
+
+        <div th:if="${editori.isEmpty()}" class="empty-state">
+            <p>Nessun editore registrato.</p>
+        </div>
+
+        <table th:unless="${editori.isEmpty()}" class="data-table">
+            <thead>
+                <tr><th>Nome</th><th>Regione</th><th>Fumetti</th><th>Azioni</th></tr>
+            </thead>
+            <tbody>
+                <tr th:each="e : ${editori}">
+                    <td><a th:href="@{'/editori/' + ${e.id}}" th:text="${e.nome}">Nome</a></td>
+                    <td th:text="${e.regione}">Regione</td>
+                    <td th:text="${e.fumetti.size()}">0</td>
+                    <td>
+                        <a th:href="@{'/admin/editori/' + ${e.id} + '/edit'}" class="btn-small">Modifica</a>
+                        <form th:action="@{'/admin/editori/' + ${e.id} + '/delete'}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn-small btn-danger" onclick="return confirm('Eliminare?')">Elimina</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="page-actions">
+            <a th:href="@{/admin/editori/new}" class="btn btn-primary">Nuovo Editore</a>
+            <a th:href="@{/admin/dashboard}" class="btn btn-secondary">&larr; Dashboard</a>
+        </div>
+    </section>
+</body>
+</html>
